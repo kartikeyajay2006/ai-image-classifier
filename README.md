@@ -1,40 +1,68 @@
-🧠✨ AI Image Classifier
+<div align="center">
 
-A smart and interactive web app built with Streamlit that uses deep learning to recognize what’s inside your images — in just seconds! 🚀
+# 🧠 AI Image Classifier
 
-🌐 Live Demo
+**Drop in a photo and see what it is in about a second, with the top 3 guesses and a confidence score for each.**
 
-🔗 Try it now: https://ai-image-classifier-yw8jmptfdt64yxxyxprabj.streamlit.app/
+[![Live demo](https://img.shields.io/badge/live_demo-Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://ai-image-classifier-yw8jmptfdt64yxxyxprabj.streamlit.app/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.17-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
+[![MobileNetV2](https://img.shields.io/badge/model-MobileNetV2_·_ImageNet-4285F4?style=flat-square)](https://keras.io/api/applications/mobilenet/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-preprocessing-5C3EE8?style=flat-square&logo=opencv&logoColor=white)](https://opencv.org/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 
-🖼️ About The Project
+**[▶ Try it live](https://ai-image-classifier-yw8jmptfdt64yxxyxprabj.streamlit.app/)**
 
-The AI Image Classifier is a lightweight, web-based tool that allows you to upload any image (JPG/PNG) and instantly get predictions about what’s in it 🤖.
+</div>
 
-It harnesses the power of MobileNetV2, a pre-trained convolutional neural network, to analyze images and display the top 3 predictions with their confidence scores 📊.
+---
 
-Whether it’s a 🐶 dog, 🚗 car, or ☕ coffee cup — this app figures it out instantly! ⚡
+## What it does
 
-⚙️ Tech Stack & Tools
+Upload a JPG or PNG and the app tells you what is in it (a dog, a car, a coffee mug) using **MobileNetV2**, a convolutional network pre-trained on the **1,000 ImageNet classes**.
+You get the **top 3 predictions** with confidence scores, in a clean dark interface.
 
-🧩 Python – The backbone of the entire project.
-🎨 Streamlit – For building a smooth, interactive, and modern web UI.
-🧠 TensorFlow / Keras – To load and run the pre-trained MobileNetV2 model.
-🖼️ OpenCV – For image preprocessing (resizing and formatting).
-📷 Pillow (PIL) – To handle uploaded image files seamlessly.
+MobileNetV2 was chosen because it is small (about 3.5M parameters) and fast on a CPU. That is what lets it run on Streamlit Community Cloud's free tier with no GPU.
 
-🔍 How It Works
+## How it works
 
-1️⃣ Upload an Image
-➡️ Choose any image file (JPG or PNG) from your device.
+```mermaid
+flowchart LR
+    U[Upload JPG / PNG] --> P[Pillow → NumPy]
+    P --> R[OpenCV resize<br/>224 × 224]
+    R --> N[preprocess_input<br/>scale to −1…1]
+    N --> M[MobileNetV2<br/>ImageNet weights]
+    M --> D[decode_predictions<br/>top 3]
+    D --> UI[Labels + confidence]
+```
 
-2️⃣ Model Preprocessing
-🧮 The image is resized and normalized using OpenCV and preprocess_input().
+The model is loaded once and cached, so every prediction after the first is fast.
 
-3️⃣ Prediction Time
-🤖 The MobileNetV2 model runs inference on the processed image.
+## Run locally
 
-4️⃣ Results Displayed
-📊 The app shows the top 3 predicted labels along with their confidence percentages.
+```bash
+git clone https://github.com/kartikeyajay2006/ai-image-classifier.git
+cd ai-image-classifier
+pip install -r requirements.txt
+streamlit run model.py
+```
 
-5️⃣ Visual Output
-🖼️ You see your uploaded image alongside the predictions — neat and instant! ⚡
+Then open http://localhost:8501.
+
+## Tech stack
+
+| | |
+|---|---|
+| Model | TensorFlow / Keras MobileNetV2 (ImageNet) |
+| Image processing | OpenCV (headless), Pillow, NumPy |
+| UI and hosting | Streamlit, Streamlit Community Cloud |
+
+## Ideas for next steps
+
+- Fine-tune on a custom dataset (for example, Indian street food) with transfer learning
+- Grad-CAM heat-maps to show *where* the model is looking
+- Camera input for live classification
+
+## Author
+
+Built by **[Kartikeya Yadav](https://github.com/kartikeyajay2006)**.
+[LinkedIn](https://www.linkedin.com/in/kartikeya2006/) · [Portfolio](https://kartikeya-portfolio-rx7w.vercel.app/)
